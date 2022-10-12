@@ -167,7 +167,7 @@ node {
 # Extracts image size.
 node {
   calculator: "ImagePropertiesCalculator"
-  input_stream: "IMAGE_GPU:image"
+  input_stream: "IMAGE_GPU:image_gpu"
   output_stream: "SIZE:image_size"
 }
 
