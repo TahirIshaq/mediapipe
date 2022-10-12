@@ -33,7 +33,7 @@ from distutils import spawn
 import distutils.command.build as build
 import distutils.command.clean as clean
 
-__version__ = '0.8'
+__version__ = 'nano461_gpu_hands_v0.8.5'
 IS_WINDOWS = (platform.system() == 'Windows')
 MP_ROOT_PATH = os.path.dirname(os.path.abspath(__file__))
 ROOT_INIT_PY = os.path.join(MP_ROOT_PATH, '__init__.py')
@@ -211,7 +211,7 @@ class GeneratePyProtos(setuptools.Command):
         sys.stderr.write('cannot find required file: %s\n' % source)
         sys.exit(-1)
 
-      protoc_command = [self._protoc, '-I.', '--python_out=.', source]
+      protoc_command = [self._protoc, '-I.', '-I/usr/local/include', '--python_out=.', source]
       if subprocess.call(protoc_command) != 0:
         sys.exit(-1)
 
@@ -224,7 +224,7 @@ class BuildBinaryGraphs(build.build):
     binary_graphs = [
         'face_detection/face_detection_front_cpu',
         'face_landmark/face_landmark_front_cpu',
-        'hand_landmark/hand_landmark_tracking_cpu',
+        'hand_landmark/hand_landmark_tracking_gpu',
         'holistic_landmark/holistic_landmark_cpu', 'objectron/objectron_cpu',
         'pose_landmark/pose_landmark_cpu',
         'selfie_segmentation/selfie_segmentation_cpu'
@@ -241,7 +241,8 @@ class BuildBinaryGraphs(build.build):
         'bazel',
         'build',
         '--compilation_mode=opt',
-        '--define=MEDIAPIPE_DISABLE_GPU=1',
+        '--copt=-DMESA_EGL_NO_X11_HEADERS',
+        '--copt=-DEGL_NO_X11',
         '--action_env=PYTHON_BIN_PATH=' + _normalize_path(sys.executable),
         os.path.join('mediapipe/modules/', graph_path),
     ]
@@ -297,7 +298,8 @@ class BuildBazelExtension(build_ext.build_ext):
         'bazel',
         'build',
         '--compilation_mode=opt',
-        '--define=MEDIAPIPE_DISABLE_GPU=1',
+        '--copt=-DMESA_EGL_NO_X11_HEADERS',
+        '--copt=-DEGL_NO_X11',
         '--action_env=PYTHON_BIN_PATH=' + _normalize_path(sys.executable),
         str(ext.bazel_target + '.so'),
     ]

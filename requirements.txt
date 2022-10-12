@@ -1,7 +1,7 @@
 absl-py
 attrs>=19.1.0
-numpy
-opencv-contrib-python
+numpy==1.19.4
+opencv-python
 protobuf>=3.11.4
 six
 wheel
